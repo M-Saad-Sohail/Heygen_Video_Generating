@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export const getAccessToken = () => {
   const options = {
     method: 'POST',

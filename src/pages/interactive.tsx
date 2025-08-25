@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 
 // Dynamically import the InteractiveAvatar component with no SSR
@@ -43,8 +44,9 @@ export default function InteractivePage() {
         setAvatars(avatarsData.data.avatars);
         setVoices(voicesData.data.voices);
         setLoading(false);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load avatars and voices');
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to load avatars and voices';
+        setError(message);
         setLoading(false);
       }
     };
@@ -90,11 +92,16 @@ export default function InteractivePage() {
                       : 'border-transparent hover:border-blue-300'
                   }`}
                 >
-                  <img
-                    src={avatar.preview_image_url}
-                    alt={avatar.avatar_name}
-                    className="w-full aspect-square object-cover"
-                  />
+                  <div className="w-full aspect-square relative">
+                    <Image
+                      src={avatar.preview_image_url}
+                      alt={avatar.avatar_name}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
+                    />
+                  </div>
                   <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
                     <div className="font-medium truncate">{avatar.avatar_name}</div>
                   </div>
