@@ -3,22 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getAccessToken } from "@/services/token";
 
-// Minimal types to avoid any
-type StreamingEventHandler = (event: unknown) => void;
-interface MinimalStreamingAvatar {
-  on: (event: string, handler: StreamingEventHandler) => void;
-  createStartAvatar: (options: StartAvatarOptions) => Promise<unknown>;
-  stopAvatar: () => Promise<void> | void;
-  speak: (options: { text: string; task_type: string }) => Promise<void>;
-}
-
-type StartAvatarOptions = {
-  quality: unknown;
-  avatarName?: string;
-  voice?: { voiceId: string };
-  activityIdleTimeout?: number;
-};
-
 export default function Demo() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +10,7 @@ export default function Demo() {
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const avatarRef = useRef<MinimalStreamingAvatar | null>(null);
+  const avatarRef = useRef<any>(null);
 
   const start = async () => {
     setError(null);
@@ -53,8 +37,8 @@ export default function Demo() {
       avatar.on(StreamingEvents.STREAM_DISCONNECTED, () => {
         setError("Stream disconnected");
       });
-      avatar.on(StreamingEvents.STREAM_READY, (event: CustomEvent<MediaStream>) => {
-        const stream: MediaStream | undefined = event?.detail;
+      avatar.on(StreamingEvents.STREAM_READY, (event: any) => {
+        const stream: MediaStream = event?.detail;
         if (!stream) return;
 
         const v = stream.getVideoTracks().length;
@@ -76,14 +60,12 @@ export default function Demo() {
         if (!a) setError("No audio track (check voiceId).");
       });
 
-      const startOptions: StartAvatarOptions = {
+      await avatar.createStartAvatar({
         quality: AvatarQuality.High,
         avatarName: "default",
         voice: { voiceId: "119caed25533477ba63822d5d1552d25" },
         activityIdleTimeout: 300,
-      };
-
-      await avatar.createStartAvatar(startOptions);
+      } as any);
 
       setBusy(false);
 
@@ -91,10 +73,9 @@ export default function Demo() {
         text: "Hello! Your streaming avatar is live.",
         task_type: TaskType.REPEAT,
       });
-    } catch (e: unknown) {
+    } catch (e: any) {
       console.error(e);
-      const message = e instanceof Error ? e.message : "Failed to start streaming avatar";
-      setError(message);
+      setError(e?.message || "Failed to start streaming avatar");
       setBusy(false);
     }
   };
@@ -171,20 +152,12 @@ function ChatBox({ onSend }: { onSend: (t: string) => void }) {
       <input
         value={text}
         onChange={(e) => setText(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            onSend(text);
-            setText("");
-          }
-        }}
+        onKeyDown={(e) => { if (e.key === "Enter") onSend(text), setText(""); }}
         placeholder="Type a message…"
         className="flex-1 border rounded px-3 py-2"
       />
       <button
-        onClick={() => {
-          onSend(text);
-          setText("");
-        }}
+        onClick={() => (onSend(text), setText(""))}
         className="px-4 py-2 rounded bg-blue-500 text-white"
       >
         Send
