@@ -38,3 +38,20 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+
+
+https://github.com/danefondo/boilerplate
+https://docs.heygen.com/docs/streaming-avatar-sdk
+https://docs.heygen.com/docs/streaming-avatar-sdk-reference
+https://docs.heygen.com/reference/create-session-token
+Robert Foenix
+https://github.com/HeyGen-Official/StreamingAvatarSDK
+Robert Foenix
+https://drive.google.com/file/d/17v2zc6Of70ghhiFIdWp4q2VnqU0imJhp/view?usp=sharing — picture of possible final result
+Robert Foenix
+Goal: Implement interactive avatar experience
+
+1. User clicks 'start button', which will lead to creating an access token using your HeyGen API key
+2. Access token is returned and used to start a HeyGen streaming session (requires installing streaming avatar sdk)
+3. Stream is displayed on the screen
+4. It's possible to send message to the avatar and it will respond
